@@ -1,11 +1,11 @@
 {
-  "name": "homebridge-plugin-name",
-  "displayName": "Plugin Name",
+  "displayName": "Toshiba Smart AC",
+  "name": "homebridge-toshiba-smart-ac",
   "type": "module",
   "version": "1.0.0",
   "private": true,
   "description": "A short description about what your plugin does.",
-  "author": "Your Name",
+  "author": "Gragio",
   "license": "Apache-2.0",
   "homepage": "https://github.com/USERNAME/GITHUB_PROJECT_NAME#readme",
   "repository": {
@@ -42,6 +42,10 @@
     "typescript-eslint": "^8.12.2"
   },
   "dependencies": {
-    "homebridge-lib": "^7.1.0"
+    "axios": "^1.7.9",
+    "azure-iot-device": "^1.18.3",
+    "azure-iot-device-amqp": "^1.14.3",
+    "homebridge-lib": "^7.1.0",
+    "uuid": "^11.0.3"
   }
 }
