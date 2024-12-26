@@ -1,18 +1,18 @@
 import { v4 as uuidv4 } from 'uuid';
-import { PlatformConfig, API, Logger, PlatformAccessory } from 'homebridge';
-import { ToshibaSmartACDevice } from './device';
-import { ToshibaSmartACPlatformAccessory } from './platformAccessory';
+import { API, DynamicPlatformPlugin, Logger, PlatformAccessory, PlatformConfig, Service, Characteristic } from 'homebridge';
 import { PLUGIN_NAME, PLATFORM_NAME } from './settings';
 import HttpApi from './services/httpApi';
 import AmqpApi from './services/amqpApi';
+import ToshibaSmartACDevice from './device';
+import ToshibaSmartACPlatformAccessory from './platformAccessory';
 
-export class ToshibaSmartACHomebridgePlatform {
+export default class ToshibaSmartACHomebridgePlatform implements DynamicPlatformPlugin {
   private accessories: PlatformAccessory[] = [];
   private sessionID: string = '';
   private http: HttpApi;
   private amqp: AmqpApi;
-  public Service: any;
-  public Characteristic: any;
+  readonly Service: typeof Service;
+  readonly Characteristic: typeof Characteristic;
 
   constructor(
     private readonly log: Logger,
@@ -24,7 +24,7 @@ export class ToshibaSmartACHomebridgePlatform {
     this.log.info(`Finished initializing ${this.config.platform} platform`);
 
     if (!this.sessionID) {
-      this.sessionID = `homebridge-${uuidv4()}`;
+      this.sessionID = `${this.config.username}_${uuidv4()}`;
     }
 
     this.http = new HttpApi(this.log, this.config);
@@ -85,7 +85,7 @@ export class ToshibaSmartACHomebridgePlatform {
         this.api.unregisterPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, this.accessories);
       }
     } catch (error) {   
-      //this.log.error(`[PLATFORM] Error for cached accessories: ${error === null || error === void 0 ? void 0 : error.message}`);
+      this.log.error(`[PLATFORM] Error for cached accessories: ${error === null || error === void 0 ? void 0 : error}`);
     }
   }
 }

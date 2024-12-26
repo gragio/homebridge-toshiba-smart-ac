@@ -5,12 +5,12 @@
       "DOM",
       "ES2022"
     ],
-    "rootDir": "src",
-    "module": "ES2022",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "strict": true,
     "declaration": true,
-    "outDir": "dist",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -19,6 +19,7 @@
   "include": [
     "eslint.config.js",
     "homebridge-ui",
-    "src"
-  ]
+    "src/**/*"
+  ],
+  "exclude": ["node_modules", "dist"]
 }

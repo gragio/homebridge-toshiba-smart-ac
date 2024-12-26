@@ -4,7 +4,7 @@ import { Device, State } from './types';
 import { convertStateToCapabilities, convertCapabilitiesToState } from './utils/state';
 import AmqpAPI from './services/amqpApi';
 
-export class ToshibaSmartACDevice {
+export default class ToshibaSmartACDevice {
   public log: Logger;
   public amqp: AmqpAPI;
   public id: string;

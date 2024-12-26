@@ -14,7 +14,7 @@ import {
   PostionByteTargetTemperature,
 } from '../constants';
 import { State } from '../types';
-import { ToshibaSmartACDevice } from '../device';
+import ToshibaSmartACDevice from '../device';
 
 function hexToBytes(hex: string): number[] {
   const bytes: number[] = [];

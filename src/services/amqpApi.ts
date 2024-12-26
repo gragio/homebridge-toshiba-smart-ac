@@ -9,7 +9,7 @@ import {
 } from '../constants';
 import { setInsideTemperature, convertStateToCapabilities } from '../utils/state';
 import { Logger } from 'homebridge';
-import { ToshibaSmartACDevice } from '../device';
+import ToshibaSmartACDevice from '../device';
 
 export default class AmqpAPI {
   private sasToken: string = '';

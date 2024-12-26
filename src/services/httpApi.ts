@@ -16,9 +16,14 @@ interface Token {
 }
 
 export default class HttpAPI {
-  private token: Token = { consumerId: '', access_token: '' };
+  private token: Token;
   private params: Record<string, string> = { consumerId: '' };
-  private headers: Record<string, string> = { Authorization: '' };
+  private headers: Record<string, string> = { 
+    'Authorization': '',
+    'Content-Type': 'application/json',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+  };
+ 
   private username: string;
   private password: string;
 
@@ -92,8 +97,8 @@ export default class HttpAPI {
     const url = this.getUrl(LOGIN_PATH);
     this.log.debug(`[HTTP API] Logging into Toshiba Home AC Control with username: ${this.username}`);
     const json = {
-      Username: this.username,
-      Password: this.password,
+      username: this.username,
+      password: this.password,
     };
     const data = await this.doPostRequest(url, json);
     this.token = data.ResObj;
@@ -125,9 +130,7 @@ export default class HttpAPI {
 
   private setHeaderAndParams(): void {
     this.params = { consumerId: this.token.consumerId };
-    this.headers = {
-      Authorization: `Bearer ${this.token.access_token}`,
-    };
+    this.headers.Authorization = `Bearer ${this.token.access_token}`;
   }
 
   private async doGetRequest(url: string, params?: Record<string, any>): Promise<any> {
@@ -160,8 +163,6 @@ export default class HttpAPI {
   }
 
   private async doPostRequest(url: string, json: Record<string, any>): Promise<any> {
-    this.log.debug(`[HTTP API] Doing POST request at ${url} with JSON: ${JSON.stringify(json, null, 2)}`);
-
     const config: AxiosRequestConfig = {
       method: 'post',
       url,
@@ -169,18 +170,50 @@ export default class HttpAPI {
       params: this.params,
       data: json,
     };
+    this.log.debug(`[HTTP API] Sending POST request to ${url} with payload:`, config);
+
 
     try {
-      const { data } = await axios(config);
+      const response = await axios(config);
+      this.log.debug(`[HTTP API] Response received with status ${response.status}`);
+
+      if (response.status !== 200) {
+        throw new Error(`HTTP error: ${response.status} - ${response.statusText}`);
+      }
+
+      const data = response.data;
       if (data && data.message_type === 'Error') {
-        throw new Error(data.message);
+        throw new Error(`API Error: ${data.message}`);
       }
       if (!data.IsSuccess) {
-        throw new Error(data.Message);
+        throw new Error(`API Error: ${data.Message}`);
       }
+
       return data;
-    } catch (ex) {
-      return Promise.reject(ex);
+    } catch (error) {
+      // Verifica se l'errore è un AxiosError
+      if (axios.isAxiosError(error)) {
+        this.log.error(`[HTTP API] Axios error: ${error.message}`, {
+          url,
+          status: error.response?.status,
+          data: error.response?.data,
+          headers: error.response?.headers,
+        });
+      } else if (error instanceof Error) {
+        // Se è un errore generico
+        this.log.error(`: ${error.message}`, {
+          url,
+          status: error.response?.status,
+          data: error.response?.data,
+          headers: error.response?.headers,
+        });
+        this.log.error(`[HTTP API] Unexpected error: ${error.message}`, error);
+      } else {
+        // Caso generico per errori di tipo `unknown`
+        this.log.error('[HTTP API] Unknown error occurred', error);
+      }
+
+      throw error; // Propaga l'errore al chiamante
     }
   }
 

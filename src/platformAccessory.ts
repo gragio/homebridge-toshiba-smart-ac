@@ -1,9 +1,9 @@
 import { PlatformAccessory, Service, Characteristic } from 'homebridge';
 import { StatusProperty, ModeProperty, IndoorTemperatureProperty, TemperatureProperty, FanModeProperty, SwingModeProperty } from './constants';
-import { ToshibaSmartACHomebridgePlatform } from './platform';
-import { ToshibaSmartACDevice } from './device';
+import ToshibaSmartACHomebridgePlatform from './platform';
+import ToshibaSmartACDevice from './device';
 
-export class ToshibaSmartACPlatformAccessory {
+export default class ToshibaSmartACPlatformAccessory {
   private service: Service;
 
   constructor(

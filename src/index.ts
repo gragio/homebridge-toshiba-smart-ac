@@ -1,7 +1,6 @@
 import type { API } from 'homebridge';
-
-import { ToshibaSmartACHomebridgePlatform } from './platform.js';
 import { PLATFORM_NAME } from './settings.js';
+import ToshibaSmartACHomebridgePlatform from './platform.js';
 
 /**
  * This method registers the platform with Homebridge
